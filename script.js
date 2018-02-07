@@ -1,10 +1,14 @@
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
+var img = new Image();
+img.src = "images/bear.png";
 
 // so things load automatically on the page
 window.onload = function() {
   // so bear appears automatically on page
+  
   drawBear(bear);
+  
   // var img = document.getElementById("tree");
   // ctx.drawImage(img, 10, 10);
 };
@@ -34,11 +38,7 @@ var bear = {
 }
 
 function drawBear(bear) {
-  var img = new Image();
-  img.onload = function() {
-    ctx.drawImage(img, bear.x, bear.y, 90, 140);
-  }
-  img.src = "images/bear.png";
+  ctx.drawImage(img, bear.x, bear.y, 90, 140)
 }
 
 // function drawTree(tree) {
@@ -52,25 +52,44 @@ function drawBear(bear) {
 
 
 function Obstacle(x,y,width,height){
-this.width = width;
-this.height = height;
-this.x = x
-this.y = y
-this.speedX = 0
-this.speedY = 0
-this.update = function(){
-    // this.y -= 2;
-    // this.x -= 2;
-    console.log("Print tree");
+  this.width = width;
+  this.height = height;
+  this.x = x
+  this.y = y
+  this.speedX = 0
+  this.speedY = 0
+  this.update = function(){
     var treeImg = new Image();
-  treeImg.onload = function() {
-    ctx.drawImage(treeImg, this.x, this.y, 90, 140);
-  }
-  treeImg.src = "images/tree.png";
-   
+    treeImg.src = "images/tree.png";
+    // treeImg.onload = function() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle += .01);
+        ctx.drawImage(treeImg, this.x, this.y, 80, 100);
+        ctx.restore();
+    // };      
+    }
+  
 }
 
-}
+var everyInterval = ((n) => {
+  if ((frameNo / n) % 1 === 0) {
+    return true
+  }
+  return false
+});
+
+var pushRandObstacle = () => {
+  if (everyInterval(50) && myObstacles.length < 50) {
+    var treeX = Math.floor(Math.random() * 530);
+    var treeY = 100;
+ //    ctx.rotate(this.angle += .002);
+    var treeWidth = 50;
+    var treeHeight = 50;
+    myObstacles.push(new Obstacle(treeX, treeY, treeWidth, treeHeight));
+  }
+ }
+
 
 
 document.onkeydown = function(e) {
@@ -106,9 +125,11 @@ bear.y += 1;
 // draws bear again every time canvas updates
 drawBear(bear);
 board.frames ++;
-    if(board.frames % 60 === 1){
-      treeX = Math.floor(Math.random() * 400);
-      treeY = Math.floor(Math.random() * 400);
+  
+  // Adjust rate at which obstacle appear
+  if(board.frames % 5 === 1){
+      treeX = Math.floor(Math.random() * 1420);
+      treeY = 800;
       treeWidth = 50;
       treeHeight = 50;
       myObstacles.push(new Obstacle(treeX, treeY, treeWidth, treeHeight));
@@ -116,13 +137,17 @@ board.frames ++;
       console.log(myObstacles);
     }
     for (i = 0; i < myObstacles.length; i++) {
-      myObstacles[i].y += 10;
+      
+      // Adjust speed of obstacles
+      myObstacles[i].y -= 5;
       myObstacles[i].update();    
     }
 }
 
 
 // updating canvas every 60 milliseconds
+
+// Adjust speed at which obstacles approach
 setInterval(updateCanvas, 60);
 
 
