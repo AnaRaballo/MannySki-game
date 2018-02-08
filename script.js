@@ -2,6 +2,8 @@ var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 var img = new Image();
 img.src = "images/bear.png";
+var myObstacles = [];
+var frameNo = 0;
 
 // so things load automatically on the page
 window.onload = function() {
@@ -9,20 +11,21 @@ window.onload = function() {
   drawBear(bear)
 };
 
-var myObstacles = [];
-var frameNo = 0;
-
 // used pacman example
+
+//================
+// Oso, donde arranca, tamaño y cuanto se mueve p/c lado
+//================
 var bear = {
   x: 650,
   y: 10,
   width: 90,
   height: 140,
   moveLeft: function() {
-    this.x -= 25
+    this.x -= 20
   },
   moveRight: function() {
-    this.x += 25
+    this.x += 20
   },
   moveDown: function() {
     this.y += 25
@@ -34,9 +37,11 @@ var bear = {
 
 function drawBear(bear) {
   ctx.drawImage(img, bear.x, bear.y, 90, 140)
-  ctx.strokeRect (bear.x, bear.y, 90, 140)// quitar
 };
 
+//=================================
+//Arboles
+//=================================
 function Obstacle(x,y,width,height){
   this.width = width;
   this.height = height;
@@ -47,11 +52,7 @@ function Obstacle(x,y,width,height){
   this.update = function(){
     var treeImg = new Image();
     treeImg.src = "images/tree.png";
-        // ctx.save();
-        // ctx.translate(this.x, this.y);
-        // ctx.rotate(this.angle += .01);
         ctx.drawImage(treeImg, this.x, this.y, 80, 100);
-        // ctx.restore();
     }
     this.collide = function(bear) {
       // collision detection based on coordinates
@@ -83,6 +84,9 @@ var everyInterval = ((n) => {
   return false
 });
 
+//=================================
+//Para mandar los arboles en forma aleatoria al array de mis obstaculos
+//=================================
 var pushRandObstacle = () => {
   if (everyInterval(50) && myObstacles.length < 50) {
     var treeX = Math.floor(Math.random() * 530);
@@ -93,15 +97,16 @@ var pushRandObstacle = () => {
   }
 };
 
+//=================================
+//Para que el oso se mueva
+//=================================
 document.onkeydown = function(e) {
   switch (e.keyCode) {
       case 37: //left arrow
-      // case 67: //a
         bear.moveLeft();
         // console.log("left");
         break;
       case 39: //right arrow
-      // case 68: //d
         bear.moveRight();
         // console.log("right");
         break;
@@ -125,11 +130,9 @@ function updateCanvas() {
   bear.y += 1;
   // draws bear again every time canvas updates
   drawBear(bear);
-  frameNo += 20;
   // Adjust rate at which obstacle appear
-  //===========
-  //BIEN  
-  //==========
+  frameNo += 15;
+  
   if(everyInterval(250)){
       treeX = Math.floor(Math.random() * 1420);
       treeY = 800;
@@ -137,35 +140,44 @@ function updateCanvas() {
       treeHeight = 50;
       myObstacles.push(new Obstacle(treeX, treeY, treeWidth, treeHeight));
   } 
+
+//=================================
+//Calling collide
+//=================================
   myObstacles.forEach((elem) => {
     elem.y -= 2;
     if(elem.collide(bear)) {
       document.location.reload();
-      document.location.href = "index.html";
-      alert('Game Over')
-      // ctx.font = "80px Arial";
-      // ctx.fillStyle = "black";
-      // ctx.fillText("This is unexpected...",(myGameArea.canvas.width / 2) - 200, myGameArea.canvas.height / 2);
-      console.log('poom boludo');
+      document.location.href = "gameOver.html";
     }
     elem.update();
   });
-
-  // for (i = 0; i < myObstacles.length; i++) {
-  //     // Adjust speed of obstacles
-  //     myObstacles[i].y -= 5;
-  //     myObstacles[i].update();    
-  //   } 
-    // for (var i =0; i < myObstacles.length; i++) {
-    //   if (bear.collide(myObstacles[i])){
-    //        // document.location.reload();
-    //        document.location.href = "index.html";
-    // //        alert("game over");
-    //   }
-    // }  
 }
+
+//=================================
+//Counter
+//=================================
+var timerElement = document.getElementById('timer');
+document.getElementById('timer').style.font = "20px DIN Alternate Bold";
+document.getElementById('timer').style.color = "#fff";
+var seconds = 0; // counter starts from 0
+var counter =function(){
+  seconds=seconds+1; // adds 1 to seconds
+  timerElement.innerHTML = ("SCORE: "+seconds);
+}
+// timer interval is every second (1000ms)
+setInterval(counter, 500);
+// The main game loop
+var main = function () {
+  // run the update function
+  update(0.02); // do not change
+  // run the render function
+  render();
+  // Request to do this again ASAP
+  requestAnimationFrame(main);
+};
 
 // updating canvas every 60 milliseconds
 // Adjust speed at which obstacles approach
-setInterval(updateCanvas, 20);
+setInterval(updateCanvas, 25);
 // end of using pacman example
