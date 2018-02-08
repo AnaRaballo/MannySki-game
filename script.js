@@ -10,14 +10,14 @@ window.onload = function() {
 };
 
 var myObstacles = [];
-var board = {
-  frames:0
-};
+var frameNo = 0;
 
 // used pacman example
 var bear = {
   x: 650,
   y: 10,
+  width: 90,
+  height: 140,
   moveLeft: function() {
     this.x -= 25
   },
@@ -34,7 +34,7 @@ var bear = {
 
 function drawBear(bear) {
   ctx.drawImage(img, bear.x, bear.y, 90, 140)
-  ctx.strokeRect (bear.x, bear.y, 90, 140)
+  ctx.strokeRect (bear.x, bear.y, 90, 140)// quitar
 };
 
 function Obstacle(x,y,width,height){
@@ -47,29 +47,32 @@ function Obstacle(x,y,width,height){
   this.update = function(){
     var treeImg = new Image();
     treeImg.src = "images/tree.png";
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.rotate(this.angle += .01);
+        // ctx.save();
+        // ctx.translate(this.x, this.y);
+        // ctx.rotate(this.angle += .01);
         ctx.drawImage(treeImg, this.x, this.y, 80, 100);
-        ctx.restore();
+        // ctx.restore();
     }
-    this.collide = function(tree) {
+    this.collide = function(bear) {
       // collision detection based on coordinates
+      //bear
       var left = bear.x;
       var right = bear.x + (bear.width);
       var top = bear.y;
       var bottom = bear.y + (bear.height);
-      var treeLeft = tree.x;
-      var treeRight = tree.x + (this.width);
-      var treeTop =tree.y;
-      var treeBottom = tree.y + (this.height);
+      //tree
+      var treeLeft = this.x;
+      var treeRight = this.x + (this.width);
+      var treeTop =this.y;
+      var treeBottom = this.y + (this.height);
       var collided = true;
       if ((bottom < treeTop) ||
           (top > treeBottom) ||
           (right < treeLeft) ||
           (left > treeRight)) {
           collided = false;
-      } return collided;
+      } 
+      return collided;
     }
 }
 
@@ -95,20 +98,20 @@ document.onkeydown = function(e) {
       case 37: //left arrow
       // case 67: //a
         bear.moveLeft();
-        console.log("left");
+        // console.log("left");
         break;
       case 39: //right arrow
       // case 68: //d
         bear.moveRight();
-        console.log("right");
+        // console.log("right");
         break;
       case 40: //down arrow
         bear.moveDown();
-        console.log("down");
+        // console.log("down");
         break;  
       case 38: //up arrow
         bear.moveUp();
-        console.log("up");
+        // console.log("up");
         break;    
   }
   // update canvas when a key is pressed
@@ -122,30 +125,47 @@ function updateCanvas() {
   bear.y += 1;
   // draws bear again every time canvas updates
   drawBear(bear);
-  board.frames ++;
+  frameNo += 20;
   // Adjust rate at which obstacle appear
-  if(board.frames % 3 === 1){
+  //===========
+  //BIEN  
+  //==========
+  if(everyInterval(250)){
       treeX = Math.floor(Math.random() * 1420);
       treeY = 800;
       treeWidth = 50;
       treeHeight = 50;
       myObstacles.push(new Obstacle(treeX, treeY, treeWidth, treeHeight));
-      board.frames = 2;
-      console.log(myObstacles);
-  } for (i = 0; i < myObstacles.length; i++) {
-      // Adjust speed of obstacles
-      myObstacles[i].y -= 5;
-      myObstacles[i].update();    
-    } for (var i =0; i < myObstacles.length; i++) {
-      if (bear.collide(myObstacles[i])){
-           // document.location.reload();
-           document.location.href = "index.html";
-    //        alert("game over");
-      }
-    }  
+  } 
+  myObstacles.forEach((elem) => {
+    elem.y -= 2;
+    if(elem.collide(bear)) {
+      document.location.reload();
+      document.location.href = "index.html";
+      alert('Game Over')
+      // ctx.font = "80px Arial";
+      // ctx.fillStyle = "black";
+      // ctx.fillText("This is unexpected...",(myGameArea.canvas.width / 2) - 200, myGameArea.canvas.height / 2);
+      console.log('poom boludo');
+    }
+    elem.update();
+  });
+
+  // for (i = 0; i < myObstacles.length; i++) {
+  //     // Adjust speed of obstacles
+  //     myObstacles[i].y -= 5;
+  //     myObstacles[i].update();    
+  //   } 
+    // for (var i =0; i < myObstacles.length; i++) {
+    //   if (bear.collide(myObstacles[i])){
+    //        // document.location.reload();
+    //        document.location.href = "index.html";
+    // //        alert("game over");
+    //   }
+    // }  
 }
 
 // updating canvas every 60 milliseconds
 // Adjust speed at which obstacles approach
-setInterval(updateCanvas, 60);
+setInterval(updateCanvas, 20);
 // end of using pacman example
