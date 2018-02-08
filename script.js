@@ -2,6 +2,8 @@ var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 var img = new Image();
 img.src = "images/bear.png";
+var imgRight = new Image();
+imgRight.src = "images/bearRight.png"; 
 var myObstacles = [];
 var frameNo = 0;
 // var audioCollide = new Audio ("audio/gameOver.mp3")
@@ -10,7 +12,7 @@ var frameNo = 0;
 // so things load automatically on the page
 window.onload = function() {
   // so bear appears automatically on page
-  drawBear(bear)
+  drawLeftBear(bear)
 };
 
 // used pacman example
@@ -37,8 +39,12 @@ var bear = {
   }
 }
 
-function drawBear(bear) {
+function drawLeftBear(bear) {
   ctx.drawImage(img, bear.x, bear.y, 100, 160)
+};
+
+function drawRightBear(bear) {
+  ctx.drawImage(imgRight, bear.x, bear.y, 100, 160)
 };
 
 //=================================
@@ -107,31 +113,46 @@ document.onkeydown = function(e) {
       case 37: //left arrow
         bear.moveLeft();
         // console.log("left");
+        // updateCanvas(drawLeftBear(bear));
+        setInterval(updateCanvas("left"), 25);
         break;
       case 39: //right arrow
         bear.moveRight();
         // console.log("right");
+        // updateCanvas(drawRightBear(bear));
+        setInterval(updateCanvas("right"), 25);
         break;
       case 40: //down arrow
         bear.moveDown();
         // console.log("down");
+        updateCanvas(bear.moveDown());
         break;  
       case 38: //up arrow
         bear.moveUp();
         // console.log("up");
+        updateCanvas(bear.moveUp());
         break;    
   }
   // update canvas when a key is pressed
-  updateCanvas();
+  // updateCanvas();
+  // setInterval(updateCanvas, 25);
 };
 
-function updateCanvas() {
+function updateCanvas(bearDirection) {
   // clears the canvas, bear would repeat
   ctx.clearRect(0,0,1800,2200);
   // makes bear fall one point at time
   bear.y += 1;
   // draws bear again every time canvas updates
-  drawBear(bear);
+  
+  // Conditional to detect whether to draw left or right bear
+    if (bearDirection == "left") {
+      drawLeftBear(bear);
+    } else if (bearDirection == "right") {
+      drawRightBear(bear);
+    } else {
+      drawLeftBear(bear);
+    }
   // Adjust rate at which obstacle appear
   frameNo += 15;
   
@@ -183,7 +204,13 @@ var main = function () {
 
 // updating canvas every 60 milliseconds
 // Adjust speed at which obstacles approach
-setInterval(updateCanvas, 25);
+// if (bear.moveRight()) {
+//   setInterval(updateCanvas("right"), 25);
+// } else if (bear.moveLeft()) {
+//   setInterval(updateCanvas("left"), 25);
+// }
+
+// setInterval(updateCanvas, 25);
 // end of using pacman example
 
 // var intarvalId = setInterval(updateCanvas, 25);
