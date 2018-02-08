@@ -4,6 +4,8 @@ var img = new Image();
 img.src = "images/bear.png";
 var myObstacles = [];
 var frameNo = 0;
+// var audioCollide = new Audio ("audio/gameOver.mp3")
+// var wooho = new Audio ("audio/Wooho.mp3")
 
 // so things load automatically on the page
 window.onload = function() {
@@ -36,7 +38,7 @@ var bear = {
 }
 
 function drawBear(bear) {
-  ctx.drawImage(img, bear.x, bear.y, 90, 140)
+  ctx.drawImage(img, bear.x, bear.y, 100, 160)
 };
 
 //=================================
@@ -52,7 +54,7 @@ function Obstacle(x,y,width,height){
   this.update = function(){
     var treeImg = new Image();
     treeImg.src = "images/tree.png";
-        ctx.drawImage(treeImg, this.x, this.y, 80, 100);
+        ctx.drawImage(treeImg, this.x, this.y, 100, 130);
     }
     this.collide = function(bear) {
       // collision detection based on coordinates
@@ -149,10 +151,12 @@ function updateCanvas() {
     if(elem.collide(bear)) {
       document.location.reload();
       document.location.href = "gameOver.html";
+      // setTimeout(startOver, 2000);
     }
     elem.update();
   });
 }
+
 
 //=================================
 //Counter
@@ -181,3 +185,12 @@ var main = function () {
 // Adjust speed at which obstacles approach
 setInterval(updateCanvas, 25);
 // end of using pacman example
+
+// var intarvalId = setInterval(updateCanvas, 25);
+
+// function startOver(){
+//   // document.location.reload();
+//   clearInterval(intervalId);
+//   return document.location.href = "gameOver.html";
+
+// }
