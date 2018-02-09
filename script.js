@@ -12,7 +12,8 @@ var frameNo = 0;
 // so things load automatically on the page
 window.onload = function() {
   // so bear appears automatically on page
-  drawLeftBear(bear)
+  drawLeftBear(bear);
+  frameCounter();
 };
 
 // used pacman example
@@ -27,16 +28,16 @@ var bear = {
   height: 140,
   direction: "left",
   moveLeft: function() {
-    this.x -= 20
+    this.x -= 40
   },
   moveRight: function() {
-    this.x += 20
+    this.x += 40
   },
   moveDown: function() {
-    this.y += 25
+    this.y += 40
   },
   moveUp: function() {
-    this.y -= 25
+    this.y -= 40
   }
 }
 
@@ -140,7 +141,17 @@ document.onkeydown = function(e) {
   // updateCanvas();
 };
 
-setInterval(updateCanvas, 25);
+// updating canvas every 60 milliseconds
+// Adjust speed at which obstacles approach
+
+var frameSeconds = 0;
+
+var frameCounter = function(){
+    frameSeconds=frameSeconds+1; // adds 1 to seconds
+    setInterval(updateCanvas, 20);
+}
+
+setInterval(frameCounter, 15000);
 
 function updateCanvas() {
   // clears the canvas, bear would repeat
@@ -165,6 +176,22 @@ function updateCanvas() {
       treeHeight = 50;
       myObstacles.push(new Obstacle(treeX, treeY, treeWidth, treeHeight));
   } 
+
+//=================================
+// Boundries
+//=================================
+  if (bear.x >= (canvas.width - bear.width)) {
+    bear.x = (canvas.width - bear.width);
+  }
+  if (bear.x <= 0) {
+    bear.x = 0;
+  }
+  if (bear.y >= (canvas.height - bear.height - 200)) {
+    bear.y = (canvas.height - bear.height - 200);
+  }
+  if (bear.y <= 0) {
+    bear.y = 0;
+  }
 
 //=================================
 //Calling collide
@@ -203,23 +230,3 @@ var main = function () {
   // Request to do this again ASAP
   requestAnimationFrame(main);
 };
-
-// updating canvas every 60 milliseconds
-// Adjust speed at which obstacles approach
-// if (bear.moveRight()) {
-//   setInterval(updateCanvas("right"), 25);
-// } else if (bear.moveLeft()) {
-//   setInterval(updateCanvas("left"), 25);
-// }
-
-// setInterval(updateCanvas, 25);
-// end of using pacman example
-
-// var intarvalId = setInterval(updateCanvas, 25);
-
-// function startOver(){
-//   // document.location.reload();
-//   clearInterval(intervalId);
-//   return document.location.href = "gameOver.html";
-
-// }
