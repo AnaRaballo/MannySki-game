@@ -230,3 +230,10 @@ var main = function () {
   // Request to do this again ASAP
   requestAnimationFrame(main);
 };
+
+//=================================
+//Print score in Game Over page (TBC)
+//=================================
+// var scoreElement = document.getElementById('score');
+// scoreElement.innerText = ("YOUR SCORE "+ seconds + " !!!");
+
