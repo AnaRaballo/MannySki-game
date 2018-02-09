@@ -25,6 +25,7 @@ var bear = {
   y: 10,
   width: 90,
   height: 140,
+  direction: "left",
   moveLeft: function() {
     this.x -= 20
   },
@@ -114,31 +115,34 @@ document.onkeydown = function(e) {
         bear.moveLeft();
         // console.log("left");
         // updateCanvas(drawLeftBear(bear));
-        setInterval(updateCanvas("left"), 25);
+        // setInterval(updateCanvas("left"), 25);
+        bear.direction = "left";
         break;
       case 39: //right arrow
         bear.moveRight();
         // console.log("right");
         // updateCanvas(drawRightBear(bear));
-        setInterval(updateCanvas("right"), 25);
+        // setInterval(updateCanvas("right"), 25);
+        bear.direction = "right";
         break;
       case 40: //down arrow
         bear.moveDown();
         // console.log("down");
-        updateCanvas(bear.moveDown());
+        // updateCanvas(bear.moveDown());
         break;  
       case 38: //up arrow
         bear.moveUp();
         // console.log("up");
-        updateCanvas(bear.moveUp());
+        // updateCanvas(bear.moveUp());
         break;    
   }
   // update canvas when a key is pressed
   // updateCanvas();
-  // setInterval(updateCanvas, 25);
 };
 
-function updateCanvas(bearDirection) {
+setInterval(updateCanvas, 25);
+
+function updateCanvas() {
   // clears the canvas, bear would repeat
   ctx.clearRect(0,0,1800,2200);
   // makes bear fall one point at time
@@ -146,13 +150,11 @@ function updateCanvas(bearDirection) {
   // draws bear again every time canvas updates
   
   // Conditional to detect whether to draw left or right bear
-    if (bearDirection == "left") {
-      drawLeftBear(bear);
-    } else if (bearDirection == "right") {
-      drawRightBear(bear);
-    } else {
-      drawLeftBear(bear);
-    }
+  if (bear.direction == "left") {
+    drawLeftBear(bear);
+  } else {
+    drawRightBear(bear);
+  }
   // Adjust rate at which obstacle appear
   frameNo += 15;
   
